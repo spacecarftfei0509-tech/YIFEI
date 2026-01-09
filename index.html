@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>焦奕菲 Jiao Yifei | 个人作品集 2022-2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-pink': '#FF8595', 'brand-green': '#4ADE80',
+                        'brand-peach': '#FF4081', 'brand-orange': '#F97316',
+                        'brand-yellow': '#FACC15', 'brand-red': '#EF4444',
+                        'light-bg': '#F8FAFC', 'light-border': '#E2E8F0',
+                    },
+                    animation: { 'spin-slow': 'spin 8s linear infinite' }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 背景与视差 - 增强版 */
+        .fixed-bg-container { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: -50; 
+            overflow: hidden; 
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+        }
+        .blob { 
+            position: absolute; 
+            border-radius: 50%; 
+            filter: blur(60px); 
+            opacity: 0.5; 
+            will-change: transform;
+            animation: blob-float 25s infinite ease-in-out;
+        }
+        .blob-1 { 
+            width: 400px; 
+            height: 400px; 
+            background: #FF8595; 
+            top: -10%; 
+            left: -10%; 
+            animation-delay: 0s;
+        }
+        .blob-2 { 
+            width: 300px; 
+            height: 300px; 
+            background: #4ADE80; 
+            bottom: 20%; 
+            right: -5%; 
+            animation-delay: 5s;
+        }
+        .blob-3 { 
+            width: 350px; 
+            height: 350px; 
+            background: #FACC15; 
+            top: 40%; 
+            left: 30%; 
+            opacity: 0.3; 
+            animation-delay: 10s;
+        }
+        .blob-4 { 
+            width: 250px; 
+            height: 250px; 
+            background: #F97316; 
+            bottom: -10%; 
+            left: 10%; 
+            animation-delay: 15s;
+        }
+        
+        /* 新增背景元素 */
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.05;
+            filter: blur(20px);
+            animation: circle-float 40s infinite linear;
+        }
+        .circle-1 { 
+            width: 600px; 
+            height: 600px; 
+            background: #FF4081; 
+            top: 60%; 
+            left: 80%; 
+            animation-delay: 0s;
+        }
+        .circle-2 { 
+            width: 400px; 
+            height: 400px; 
+            background: #4ADE80; 
+            top: 10%; 
+            right: 20%; 
+            animation-delay: 10s;
+        }
+        
+        @keyframes blob-float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.1); }
+            50% { transform: translate(-20px, 20px) scale(0.9); }
+            75% { transform: translate(-30px, -30px) scale(1.05); }
+        }
+        
+        @keyframes circle-float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(100px, -100px) rotate(360deg); }
+        }
+        
+        .glass-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: -40; 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            background: linear-gradient(
+                135deg, 
+                rgba(255, 255, 255, 0.3) 0%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                rgba(255, 255, 255, 0.1) 100%
+            ); 
+        }
+
+        /* 首页图标动效 (波浪+果冻) */
+        @keyframes float-wave { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
+        @keyframes jelly-glow { 0% { transform: scale(1, 1); filter: drop-shadow(0 0 0 rgba(0,0,0,0)); } 25% { transform: scale(0.9, 1.1); } 50% { transform: scale(1.1, 0.9); filter: drop-shadow(0 0 20px currentColor); } 75% { transform: scale(0.95, 1.05); } 100% { transform: scale(1, 1); filter: drop-shadow(0 0 15px currentColor); } }
+        .icon-lively { animation: float-wave 3s ease-in-out infinite; cursor: pointer; transition: color 0.3s ease; color: inherit; }
+        .icon-lively:hover { animation: jelly-glow 0.6s both; filter: brightness(1.2) drop-shadow(0 0 15px currentColor) !important; }
+
+        /* 简历通用样式 */
+        .stat-item { position: relative; overflow: hidden; background: white; border: 1px solid #E2E8F0; transition: all 0.3s ease; }
+        .stat-number { transition: all 0.5s ease; display: inline-block; }
+        .stat-item:hover .stat-number { transform: scale(1.3); color: #F97316; }
+        .stat-item::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, transparent, currentColor, transparent); transform: translateX(-100%); transition: transform 0.5s ease; }
+        .stat-item:hover::after { transform: translateX(100%); }
+        
+        /* 技能卡片 */
+        .skill-cell { background: white; border: 1px solid #E2E8F0; border-radius: 1rem; padding: 1.5rem; transition: all 0.3s ease; }
+        .skill-cell:hover { transform: translateY(-5px); border-color: #FF8595; box-shadow: 0 10px 30px rgba(255, 133, 149, 0.1); }
+
+        /* 成长历程时间轴 - 修复圆点遮挡问题 */
+        .growth-container { position: relative; display: flex; gap: 2rem; padding: 2rem 0; }
+        .growth-step { flex: 1; text-align: center; padding: 2rem 1.5rem; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(5px); border-radius: 1rem; border: 1px solid rgba(255, 255, 255, 0.8); transition: all 0.3s ease; position: relative; z-index: 2; margin-top: 40px; }
+        .growth-step:hover { transform: translateY(-10px); background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .growth-line { position: absolute; top: 70px; left: 5%; right: 5%; height: 3px; background: linear-gradient(to right, #FF8595, #4ADE80, #FACC15, #F97316); z-index: 1; }
+        .growth-dot { position: absolute; top: 70px; width: 24px; height: 24px; background: white; border: 4px solid; border-radius: 50%; z-index: 3; transform: translateY(-50%); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .growth-dot-1 { left: 12.5%; border-color: #FF8595; }
+        .growth-dot-2 { left: 37.5%; border-color: #4ADE80; }
+        .growth-dot-3 { left: 62.5%; border-color: #FACC15; }
+        .growth-dot-4 { left: 87.5%; border-color: #F97316; }
+
+        /* 雷达图样式 - 优化版 */
+        .radar-chart {
+            position: relative;
+            width: 100%;
+            height: 280px; /* 增加高度防止截断 */
+            margin-top: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .radar-grid {
+            fill: none;
+            stroke: #E2E8F0;
+            stroke-width: 1;
+        }
+        
+        .radar-axes line {
+            stroke: #E2E8F0;
+            stroke-width: 1;
+        }
+        
+        .radar-polygon {
+            fill: rgba(255, 133, 149, 0.2);
+            stroke: #FF8595;
+            stroke-width: 2.5; /* 加粗 */
+            stroke-dasharray: 5, 5;
+            opacity: 0;
+            transform-origin: center;
+            filter: drop-shadow(0 4px 6px rgba(255, 133, 149, 0.2));
+        }
+        
+        .radar-point {
+            r: 5;
+            fill: white;
+            stroke-width: 2.5;
+            stroke: #FF8595;
+            opacity: 0;
+            cursor: pointer;
+            transition: r 0.3s ease;
+        }
+        
+        .radar-label {
+            font-size: 11px;
+            font-weight: 600;
+            fill: #64748B;
+            opacity: 0;
+            user-select: none;
+        }
+
+        /* 成绩条形图 */
+        .bar-bg { height: 8px; background: #F1F5F9; border-radius: 4px; overflow: hidden; margin-top: 3px; }
+        .bar-fill { height: 100%; border-radius: 4px; width: 0; transition: width 1.5s ease-out; }
+
+        /* 气泡图 */
+        .bubble-chart { position: relative; height: 280px; margin-bottom: 40px; }
+        .bubble { position: absolute; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white; font-weight: bold; font-size: 13px; cursor: pointer; transition: transform 0.3s ease; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: 2px solid rgba(255,255,255,0.3); }
+        .bubble:hover { transform: scale(1.15) !important; z-index: 20; }
+
+        /* 获奖表格 (严格 Grid 排版) - 统一字体 */
+        .award-header { 
+            display: grid; 
+            grid-template-columns: 1fr 4fr 2fr 2fr; 
+            padding: 1rem 1.5rem; 
+            background-color: #F8FAFC; 
+            font-size: 11px; 
+            font-weight: 700; 
+            color: #64748B; 
+            text-transform: uppercase; 
+            border-bottom: 1px solid #e2e8f0; 
+            letter-spacing: 0.05em; 
+            font-family: 'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .award-row { 
+            display: grid; 
+            grid-template-columns: 1fr 4fr 2fr 2fr; 
+            padding: 1.25rem 1.5rem; 
+            align-items: center; 
+            border-bottom: 1px solid #f1f5f9; 
+            transition: all 0.2s ease; 
+            font-size: 0.875rem; 
+            color: #334155; 
+            font-family: 'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .award-row:hover { 
+            background-color: rgba(74, 222, 128, 0.05); 
+            transform: translateX(5px); 
+            border-left: 4px solid #4ADE80; 
+            padding-left: calc(1.5rem - 4px); 
+        }
+        .col-year { 
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Courier New', monospace; 
+            color: #64748B; 
+            font-weight: 600;
+        }
+        .col-name { 
+            font-weight: 600;
+        }
+        .col-award { 
+            font-weight: 600;
+        }
+        .col-award.text-brand-green {
+            color: #4ADE80;
+            font-weight: 700;
+        }
+        .col-role { 
+            color: #64748B; 
+            text-align: right;
+        }
+
+        /* 实践时间线 */
+        .timeline-line { border-left: 2px solid #E2E8F0; margin-left: 1rem; padding-left: 2rem; }
+        .timeline-node { position: relative; margin-bottom: 2rem; }
+        .timeline-node::before { content: ''; position: absolute; left: -2.35rem; top: 0.5rem; width: 12px; height: 12px; background: white; border: 3px solid #CBD5E1; border-radius: 50%; transition: all 0.3s ease; }
+        .timeline-node:hover::before { border-color: #F97316; transform: scale(1.3); }
+
+        /* 荣誉统计卡片 */
+        .honor-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 2rem; }
+        .honor-stat-card { background: linear-gradient(135deg, rgba(255, 133, 149, 0.1), rgba(250, 204, 21, 0.1)); border-radius: 1rem; padding: 1.5rem; text-align: center; transition: all 0.3s ease; }
+        .honor-stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(250, 204, 21, 0.1); }
+        .honor-stat-number { font-size: 2.5rem; font-weight: 900; color: #F97316; line-height: 1; }
+        .honor-stat-label { font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.5rem; }
+
+        /* 弹窗样式 (防止遮挡) */
+        .modal-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); overflow-y: auto; display: none; }
+        .modal-content { max-width: 1000px; margin: 0 auto; padding: 6rem 2rem 4rem; } /* 顶部留足空间 */
+        .modal-close { position: fixed; top: 2rem; right: 2rem; z-index: 2100; background: white; padding: 0.8rem; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s; }
+        .modal-close:hover { transform: scale(1.1); background: #f3f4f6; }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .music-spin { animation: spin 4s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .abstract-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .abstract-content.open { max-height: 500px; }
+        
+        /* 确保整个页面都有背景 */
+        #resume, #projects { 
+            background-color: rgba(255,255,255,0.6); 
+            border-radius: 3rem; 
+            padding: 3rem; 
+            margin-top: 4rem; 
+            margin-bottom: 4rem; 
+            backdrop-filter: blur(5px); 
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        
+        /* 确保首页背景不延伸到其他部分 */
+        #hero { background: none; }
+    </style>
+</head>
+<body class="text-gray-800 antialiased overflow-x-hidden font-sans">
+
+    <div class="fixed-bg-container">
+        <div class="blob blob-1" data-speed="0.2"></div>
+        <div class="blob blob-2" data-speed="0.4"></div>
+        <div class="blob blob-3" data-speed="0.3"></div>
+        <div class="blob blob-4" data-speed="0.5"></div>
+        <div class="bg-circle circle-1"></div>
+        <div class="bg-circle circle-2"></div>
+    </div>
+    <div class="glass-overlay"></div>
+
+    <div class="fixed left-8 bottom-8 z-[100] group cursor-pointer" onclick="toggleMusic()">
+        <div id="music-disc" class="w-12 h-12 bg-gray-900 rounded-full border-4 border-gray-200 shadow-xl flex items-center justify-center relative overflow-hidden">
+            <div class="absolute inset-0 border-2 border-gray-700 rounded-full m-1 opacity-50"></div>
+            <div class="absolute inset-0 border-2 border-gray-700 rounded-full m-3 opacity-50"></div>
+            <i data-lucide="music" class="w-5 h-5 text-brand-pink relative z-10"></i>
+        </div>
+        <audio id="bgm" loop src="assets/bgm.mp3" autoplay></audio>
+    </div>
+
+    <nav class="fixed top-0 left-0 w-full bg-white/30 backdrop-blur-md z-50 border-b border-white/20 hidden lg:block">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="font-bold text-xl tracking-tight">PORTFOLIO</div>
+            <div class="flex gap-8 text-sm font-medium text-gray-800">
+                <a href="#hero" class="hover:text-brand-pink transition font-bold">首页</a>
+                <a href="#resume" class="hover:text-brand-green transition">简历</a>
+                <a href="#projects" class="hover:text-brand-orange transition">作品</a>
+            </div>
+        </div>
+    </nav>
+    
+    <nav class="fixed right-8 top-1/2 -translate-y-1/2 z-[100] flex flex-col gap-6 hidden lg:flex">
+        <a href="#hero" class="p-2 hover:scale-125 transition bg-white/50 backdrop-blur-md rounded-full shadow-sm"><i data-lucide="home" class="w-5 h-5 text-gray-600"></i></a>
+        <a href="#resume" class="p-2 hover:scale-125 transition bg-white/50 backdrop-blur-md rounded-full shadow-sm"><i data-lucide="user" class="w-5 h-5 text-brand-pink"></i></a>
+        <a href="#projects" class="p-2 hover:scale-125 transition bg-white/50 backdrop-blur-md rounded-full shadow-sm"><i data-lucide="layout" class="w-5 h-5 text-brand-orange"></i></a>
+    </nav>
+
+    <header id="hero" class="relative h-screen flex flex-col justify-between p-12 md:p-20 pt-24">
+        <div class="text-7xl md:text-8xl font-black text-gray-400/50 tracking-tighter leading-none select-none mix-blend-overlay">
+            Portfolio<br><span class="text-3xl font-normal text-gray-500 tracking-normal">2022-2025</span>
+        </div>
+
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-8 md:gap-20 items-center justify-center w-full px-4">
+            <div class="icon-lively text-brand-pink" style="animation-delay: 0s;"><i data-lucide="apple" class="w-16 h-16 md:w-24 md:h-24 fill-current opacity-90"></i></div>
+            <div class="icon-lively text-brand-green" style="animation-delay: 0.2s;"><i data-lucide="sprout" class="w-16 h-16 md:w-24 md:h-24 fill-current opacity-90"></i></div>
+            <div class="icon-lively text-brand-peach" style="animation-delay: 0.4s;"><i data-lucide="flower" class="w-16 h-16 md:w-24 md:h-24 fill-current opacity-90 transform rotate-45"></i></div>
+            <div class="icon-lively text-brand-orange" style="animation-delay: 0.6s;"><i data-lucide="bird" class="w-16 h-16 md:w-24 md:h-24 fill-current opacity-90"></i></div>
+            <div class="icon-lively text-brand-yellow" style="animation-delay: 0.8s;">
+                <svg viewBox="0 0 1024 1024" class="w-16 h-16 md:w-24 md:h-24 fill-current opacity-90" stroke="none">
+                    <path d="M296.96 92.672c-34.304 15.872-49.152 56.832-33.792 92.672l128 295.936-151.552-204.288C216.576 245.76 173.568 238.592 143.36 260.096l-3.584 2.56c-30.72 22.016-38.4 65.024-17.408 97.28l168.448 258.048-131.584-123.904c-28.16-26.624-70.656-26.112-97.28 1.024l-3.584 3.584c-26.112 26.624-26.624 70.656-0.512 98.816l293.376 320.512c38.912 35.84 61.44 64.512 147.968 78.848 86.016 14.336 283.136-67.072 334.848-192.512 18.944-45.568 38.912-124.416 46.592-174.592l48.64-254.464c7.68-38.912-16.384-77.824-54.272-88.576-37.888-10.752-77.312 10.752-88.064 48.64l-51.712 173.568-117.76-380.928c-11.264-36.864-49.152-58.88-86.016-49.152l-4.096 1.024c-36.352 9.728-57.856 47.104-49.152 84.48l59.904 247.296-144.896-287.232c-17.408-34.304-58.368-49.152-92.672-33.28l-3.584 1.536z" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="text-right">
+            <div class="text-7xl md:text-9xl font-black text-gray-800 tracking-tighter leading-none mb-4 select-none">YIFEI</div>
+            <div class="text-lg md:text-xl text-gray-600 font-bold space-x-3">
+                <span class="text-gray-900">焦奕菲</span> <span>中南大学</span> <span>数字媒体艺术</span>
+            </div>
+        </div>
+    </header>
+
+    <main id="resume" class="max-w-7xl mx-auto px-6 space-y-40 relative z-10">
+        
+        <section class="grid md:grid-cols-12 gap-12 items-center resume-section">
+            <div class="md:col-span-4 flex flex-col items-center">
+                <div class="w-56 h-56 md:w-64 md:h-64 rounded-full overflow-hidden border-[8px] border-white shadow-2xl relative z-10 bg-white hover:scale-105 transition duration-500 cursor-pointer">
+                    <img src="assets/avatar.jpg" class="w-full h-full object-cover">
+                </div>
+                <div class="text-center mt-6">
+                    <h2 class="text-4xl font-bold text-gray-900">焦奕菲</h2>
+                    <p class="text-gray-500 font-mono mt-2 tracking-[0.2em] uppercase">2004.05</p>
+                    <div class="mt-2 text-center space-y-1">
+                        <p class="text-gray-700 font-bold">数字媒体艺术</p>
+                        <p class="text-gray-500 text-sm">中南大学 建筑与艺术学院</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="md:col-span-8 space-y-10">
+                <div class="bg-white/50 backdrop-blur-sm rounded-[32px] p-8 border border-white/60 shadow-sm">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">个人简介</h2>
+                    <p class="text-gray-600 mb-6 leading-relaxed text-justify">中南大学建筑与艺术学院数字媒体艺术专业学生，专业排名3/25，加权平均88.38。专注于交互设计、数字艺术创作与创新技术应用，具备跨学科综合能力。在校期间积极参与各类竞赛和项目实践，获得多项国家级和省级奖项。</p>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                        <div class="stat-item p-4 rounded-2xl text-center hover:bg-brand-pink/5 transition-colors" onmouseenter="animateCounter(this, 3, 3)">
+                            <div class="stat-number text-3xl font-black text-gray-800">3/25</div>
+                            <div class="text-[10px] font-bold text-gray-500 mt-2 uppercase">专业排名</div>
+                        </div>
+                        <div class="stat-item p-4 rounded-2xl text-center hover:bg-brand-green/5 transition-colors" onmouseenter="animateCounter(this, 88.38, 88.38)">
+                            <div class="stat-number text-3xl font-black text-gray-800">88.38</div>
+                            <div class="text-[10px] font-bold text-gray-500 mt-2 uppercase">加权平均</div>
+                        </div>
+                        <div class="stat-item p-4 rounded-2xl text-center hover:bg-brand-orange/5 transition-colors col-span-2 flex justify-around items-center">
+                            <div><span class="stat-number text-2xl font-black text-gray-800">477</span><div class="text-[10px] font-bold text-gray-500 uppercase">CET-4</div></div>
+                            <div class="h-8 w-px bg-gray-300"></div>
+                            <div><span class="stat-number text-2xl font-black text-gray-800">457</span><div class="text-[10px] font-bold text-gray-500 uppercase">CET-6</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col md:flex-row gap-4">
+                    <a href="tel:13935976975" class="flex-1 py-4 bg-brand-pink/80 backdrop-blur-md text-white rounded-2xl font-bold hover:bg-brand-pink transition text-center shadow-sm">TEL: 13935976975</a>
+                    <a href="mailto:13935976975@163.com" class="flex-1 py-4 bg-white/50 backdrop-blur-md text-gray-700 rounded-2xl font-bold hover:bg-white/80 transition text-center shadow-sm border border-white/60">Email: 13935976975@163.com</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume-section">
+            <h3 class="text-3xl font-bold flex items-center gap-4 text-gray-800 mb-12"><i data-lucide="trending-up" class="text-brand-orange"></i> 成长历程</h3>
+            <div class="growth-container">
+                <div class="growth-line"></div>
+                <div class="growth-dot growth-dot-1"></div>
+                <div class="growth-dot growth-dot-2"></div>
+                <div class="growth-dot growth-dot-3"></div>
+                <div class="growth-dot growth-dot-4"></div>
+                
+                <div class="growth-step">
+                    <div class="text-4xl font-black text-gray-200 mb-4">2022</div>
+                    <h4 class="text-lg font-bold text-brand-yellow mb-2">启航与公益</h4>
+                    <p class="text-sm text-gray-600">入学任班长<br>"山那边"支教团</p>
+                </div>
+                <div class="growth-step">
+                    <div class="text-4xl font-black text-gray-200 mb-4">2023</div>
+                    <h4 class="text-lg font-bold text-brand-green mb-2">专业积淀</h4>
+                    <p class="text-sm text-gray-600">获"互联网+"奖项<br>美术馆策展实习<br>修读核心课程</p>
+                </div>
+                <div class="growth-step">
+                    <div class="text-4xl font-black text-gray-200 mb-4">2024</div>
+                    <h4 class="text-lg font-bold text-brand-pink mb-2">竞赛爆发</h4>
+                    <p class="text-sm text-gray-600">大广赛国奖<br>IGEM 全球铜奖<br>学生会主席</p>
+                </div>
+                <div class="growth-step">
+                    <div class="text-4xl font-black text-gray-200 mb-4">2025</div>
+                    <h4 class="text-lg font-bold text-brand-orange mb-2">学术突破</h4>
+                    <p class="text-sm text-gray-600">发表ACM会议论文<br>非遗数字化项目<br>电视台实习</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume-section">
+            <h3 class="text-3xl font-bold flex items-center gap-4 text-gray-800 mb-12"><i data-lucide="cpu" class="text-brand-pink"></i> 能力与技能全景</h3>
+            
+            <div class="grid md:grid-cols-12 gap-8">
+                <div class="md:col-span-5 bg-white/50 backdrop-blur-sm rounded-[32px] p-6 border border-white/60 shadow-sm flex flex-col items-center justify-center">
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">核心能力维度</h4>
+                    
+                    <div class="radar-chart">
+                        <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" id="radar-svg">
+                            <g class="radar-grid">
+                                <circle cx="150" cy="150" r="75" stroke-width="1" style="opacity: 0.3"/>
+                                <circle cx="150" cy="150" r="56.25" stroke-width="1" style="opacity: 0.2"/>
+                                <circle cx="150" cy="150" r="37.5" stroke-width="1" style="opacity: 0.2"/>
+                                <circle cx="150" cy="150" r="18.75" stroke-width="1" style="opacity: 0.1"/>
+                            </g>
+                            
+                            <g class="radar-axes" id="radar-axes"></g>
+                            
+                            <polygon class="radar-polygon" id="radar-polygon" points=""/>
+                            
+                            <g id="radar-points"></g>
+                            
+                            <g class="radar-labels" id="radar-labels"></g>
+                        </svg>
+                    </div>
+                    
+                    <div class="mt-4 grid grid-cols-2 gap-3 w-full max-w-xs">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-brand-pink"></div>
+                            <span class="text-xs text-gray-600 font-medium">技术: <span class="font-bold">4.5</span></span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-brand-green"></div>
+                            <span class="text-xs text-gray-600 font-medium">AIGC: <span class="font-bold">4.0</span></span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-brand-yellow"></div>
+                            <span class="text-xs text-gray-600 font-medium">视觉: <span class="font-bold">4.5</span></span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-brand-orange"></div>
+                            <span class="text-xs text-gray-600 font-medium">交互: <span class="font-bold">4.5</span></span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-brand-peach"></div>
+                            <span class="text-xs text-gray-600 font-medium">领导: <span class="font-bold">4.5</span></span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-brand-red"></div>
+                            <span class="text-xs text-gray-600 font-medium">学术: <span class="font-bold">4.0</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-7 grid grid-cols-2 gap-6">
+                    <div class="skill-cell">
+                        <h4 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-4">基础设计</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg font-bold text-xs">Ps</span>
+                            <span class="px-3 py-1 bg-purple-50 text-purple-600 rounded-lg font-bold text-xs">Ae</span>
+                            <span class="px-3 py-1 bg-orange-50 text-orange-600 rounded-lg font-bold text-xs">Ai</span>
+                            <span class="px-3 py-1 bg-gray-100 rounded-lg font-bold text-xs">Blender</span>
+                            <span class="px-3 py-1 bg-gray-100 rounded-lg font-bold text-xs">Procreate</span>
+                        </div>
+                    </div>
+                    <div class="skill-cell">
+                        <h4 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-4">软硬件联动</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-green-50 text-green-600 rounded-lg font-bold text-xs">TouchDesigner</span>
+                            <span class="px-3 py-1 bg-green-50 text-green-600 rounded-lg font-bold text-xs">Arduino</span>
+                            <span class="px-3 py-1 bg-gray-100 rounded-lg font-bold text-xs">Figma</span>
+                            <span class="px-3 py-1 bg-gray-100 rounded-lg font-bold text-xs">Unity</span>
+                        </div>
+                    </div>
+                    <div class="skill-cell col-span-2">
+                        <h4 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-4">AIGC & 新兴技术</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 border border-gray-200 rounded-full text-xs text-gray-600">Sora</span>
+                            <span class="px-3 py-1 border border-gray-200 rounded-full text-xs text-gray-600">Midjourney</span>
+                            <span class="px-3 py-1 border border-gray-200 rounded-full text-xs text-gray-600">Runway</span>
+                            <span class="px-3 py-1 border border-gray-200 rounded-full text-xs text-gray-600">即梦</span>
+                            <span class="px-3 py-1 border border-gray-200 rounded-full text-xs text-gray-600">Mixamo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume-section">
+            <div class="flex items-center gap-4 border-b-4 border-brand-pink pb-4 w-full"><svg viewBox="0 0 24 24" class="w-10 h-10 text-brand-pink fill-current" stroke="none"><circle cx="12" cy="12" r="6" /><circle cx="12" cy="4" r="3" /><circle cx="19" cy="8" r="3" /><circle cx="19" cy="16" r="3" /><circle cx="12" cy="20" r="3" /><circle cx="5" cy="16" r="3" /><circle cx="5" cy="8" r="3" /></svg><h3 class="text-3xl font-black text-gray-900">课题科研项目及论文</h3></div>
+            <div class="space-y-8 mt-12">
+                <div class="bg-white/50 backdrop-blur-sm p-8 rounded-[32px] border border-white/60 hover:shadow-lg transition cursor-pointer" onclick="this.querySelector('.abstract-content').classList.toggle('open')"><div class="flex flex-col gap-2"><span class="px-3 py-1 bg-brand-pink/20 text-brand-pink text-xs font-bold rounded-full w-fit">第一作者</span><h4 class="text-xl font-bold text-gray-900 leading-snug">论文标题：《Design and Implementation of an Interactive Natural Education Toolkit for Children Based on STEAM Theory...》</h4><p class="text-sm text-gray-600 font-medium mt-2">会议名称：2025 2nd International Symposium on Artificial Intelligence for Education (ISAIEd 2025) ACM 出版社 <span class="text-green-600 font-bold">(已被录用)</span></p></div><div class="abstract-content text-gray-600 text-sm border-l-4 border-brand-pink pl-6 mt-4 italic">摘要：基于 STEAM 理论设计了一套面向儿童的互动式自然教育工具包...</div></div>
+                <div class="bg-white/30 backdrop-blur-sm rounded-[32px] p-8 space-y-6 border border-white/50">
+                    <div class="flex flex-col md:flex-row gap-4 border-b border-gray-200/50 pb-4 last:border-0"><span class="font-mono font-bold text-gray-500 w-16">2024</span><div class="flex-1"><h5 class="font-bold text-gray-800">IGEM 国际基因工程机器大赛・中南大学组</h5><p class="text-sm text-gray-600 mt-1">负责 Wiki 网页、Presentation Video 制作</p></div></div>
+                    <div class="flex flex-col md:flex-row gap-4 border-b border-gray-200/50 pb-4 last:border-0"><span class="font-mono font-bold text-gray-500 w-16">2025</span><div class="flex-1"><h5 class="font-bold text-gray-800">【舞意贰】中南大学建筑与艺术学院 2025 届舞蹈表演专业毕业专场</h5><p class="text-sm text-gray-600 mt-1">视觉设计</p></div></div>
+                    <div class="flex flex-col md:flex-row gap-4"><span class="font-mono font-bold text-gray-500 w-16">2024</span><div class="flex-1"><h5 class="font-bold text-gray-800">中南大学大学生创新创业大赛 / "升华杯"《彩绳舞衣》</h5><p class="text-sm text-gray-600 mt-1">负责人（省级铜奖）</p></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume-section">
+            <div class="flex items-center gap-4 border-b-4 border-brand-green pb-4 w-full"><i data-lucide="sprout" class="w-10 h-10 text-brand-green fill-current"></i><h3 class="text-3xl font-black text-gray-900">竞赛获奖</h3></div>
+            
+            <div class="bubble-chart" id="bubble-container">
+                <div class="bubble bg-brand-green/90" style="width: 130px; height: 130px; top: 10%; left: 10%;">大广赛<br>国奖<span class="text-[10px] block font-normal mt-1 opacity-80">国家级</span></div>
+                <div class="bubble bg-brand-pink/90" style="width: 150px; height: 150px; top: 30%; left: 40%;">IGEM<br>全球铜奖<span class="text-[10px] block font-normal mt-1 opacity-80">国际级</span></div>
+                <div class="bubble bg-brand-orange/90" style="width: 100px; height: 100px; top: 15%; right: 15%;">互联网+<br>校一等</div>
+                <div class="bubble bg-brand-yellow/90" style="width: 120px; height: 120px; bottom: 15%; left: 25%;">志愿服务<br>全国银</div>
+                <div class="bubble bg-brand-peach/90" style="width: 90px; height: 90px; bottom: 25%; right: 25%;">好创意<br>省二等</div>
+            </div>
+
+            <div class="bg-white/50 backdrop-blur-sm rounded-[32px] border border-white/60 overflow-hidden shadow-sm mt-8">
+                <div class="award-header">
+                    <div>年份</div><div>赛事名称</div><div>奖项等级</div><div class="text-right">角色</div>
+                </div>
+                <div class="divide-y divide-gray-50 text-sm text-gray-700">
+                    <div class="award-row"><div class="col-year">2024</div><div class="col-name">第 16 届全国大学生广告艺术大赛</div><div class="col-award text-brand-green">全国三等奖</div><div class="col-role">第一作者</div></div>
+                    <div class="award-row"><div class="col-year">2024</div><div class="col-name">IGEM 国际基因工程机器大赛</div><div class="col-award text-brand-green">全球铜奖</div><div class="col-role">美工负责</div></div>
+                    <div class="award-row"><div class="col-year">2024</div><div class="col-name">第 16 届全国大学生广告艺术大赛</div><div class="col-award">湖南三等奖</div><div class="col-role">第一作者</div></div>
+                    <div class="award-row"><div class="col-year">2024</div><div class="col-name">第 18 届中国好创意数字艺术大赛</div><div class="col-award">湖南二等奖</div><div class="col-role">第一作者</div></div>
+                    <div class="award-row"><div class="col-year">2024</div><div class="col-name">第 13 届未来设计师大赛</div><div class="col-award">湖南三等奖×3</div><div class="col-role">第一作者</div></div>
+                    <div class="award-row"><div class="col-year">2024</div><div class="col-name">第 7 届中国青年志愿服务大赛</div><div class="col-award text-brand-green">全国银奖</div><div class="col-role">宣传成员</div></div>
+                    <div class="award-row"><div class="col-year">2024</div><div class="col-name">第 19 届中南大学 "升华杯"</div><div class="col-award">二等奖</div><div class="col-role">第二负责</div></div>
+                    <div class="award-row"><div class="col-year">2024</div><div class="col-name">第 7 届中南大学网络文化节</div><div class="col-award">二等奖</div><div class="col-role">独立作者</div></div>
+                    <div class="award-row"><div class="col-year">2024</div><div class="col-name">第 9 届中南大学 "互联网+"</div><div class="col-award">校一等/三等</div><div class="col-role">成员</div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume-section">
+            <div class="flex items-center gap-4 border-b-4 border-brand-orange pb-4 w-full">
+                <i data-lucide="bird" class="w-10 h-10 text-brand-orange fill-current"></i>
+                <h3 class="text-3xl font-black text-gray-900">实践与实习经历</h3>
+            </div>
+             <div class="timeline-line space-y-12 mt-12">
+                 <div class="timeline-node pl-12 py-4 rounded-xl"><div class="flex flex-col md:flex-row md:items-baseline gap-4"><span class="font-black text-brand-orange font-mono w-40">2024.9 - 至今</span><div class="flex-1"><h4 class="font-bold text-gray-800">中南大学建艺院 | 学生会主席</h4><p class="text-sm text-gray-600 mt-1">负责协调学生工作，组织学术活动。</p></div></div></div>
+                 <div class="timeline-node pl-12 py-4 rounded-xl"><div class="flex flex-col md:flex-row md:items-baseline gap-4"><span class="font-black text-gray-400 font-mono w-40">2024.12 - 2025.2</span><div class="flex-1"><h4 class="font-bold text-gray-800">山西省运城市电视台 | 导演助理</h4><p class="text-sm text-gray-600 mt-1">协助节目策划与制作。</p></div></div></div>
+                 <div class="timeline-node pl-12 py-4 rounded-xl"><div class="flex flex-col md:flex-row md:items-baseline gap-4"><span class="font-black text-gray-400 font-mono w-40">2023.7 - 2023.8</span><div class="flex-1"><h4 class="font-bold text-gray-800">"山那边"支教团 | 宣传/教师</h4><p class="text-sm text-gray-600 mt-1">负责支教宣传与教学。</p></div></div></div>
+            </div>
+         </section>
+
+         <section class="resume-section">
+            <div class="flex items-center gap-4 border-b-4 border-brand-yellow pb-4 w-full">
+                <svg viewBox="0 0 1024 1024" class="w-10 h-10 text-brand-yellow fill-current" stroke="none"><path d="M296.96 92.672c-34.304 15.872-49.152 56.832-33.792 92.672l128 295.936-151.552-204.288C216.576 245.76 173.568 238.592 143.36 260.096l-3.584 2.56c-30.72 22.016-38.4 65.024-17.408 97.28l168.448 258.048-131.584-123.904c-28.16-26.624-70.656-26.112-97.28 1.024l-3.584 3.584c-26.112 26.624-26.624 70.656-0.512 98.816l293.376 320.512c38.912 35.84 61.44 64.512 147.968 78.848 86.016 14.336 283.136-67.072 334.848-192.512 18.944-45.568 38.912-124.416 46.592-174.592l48.64-254.464c7.68-38.912-16.384-77.824-54.272-88.576-37.888-10.752-77.312 10.752-88.064 48.64l-51.712 173.568-117.76-380.928c-11.264-36.864-49.152-58.88-86.016-49.152l-4.096 1.024c-36.352 9.728-57.856 47.104-49.152 84.48l59.904 247.296-144.896-287.232c-17.408-34.304-58.368-49.152-92.672-33.28l-3.584 1.536z" /></svg>
+                <h3 class="text-3xl font-black text-gray-900">个人荣誉</h3>
+            </div>
+            
+            <div class="honor-stats mt-8">
+                <div class="honor-stat-card" data-count="4">
+                    <div class="honor-stat-number">0</div>
+                    <div class="honor-stat-label">次优秀学生</div>
+                </div>
+                <div class="honor-stat-card" data-count="3">
+                    <div class="honor-stat-number">0</div>
+                    <div class="honor-stat-label">次奖学金</div>
+                </div>
+            </div>
+            
+            <div class="bg-yellow-50/30 backdrop-blur-sm p-10 rounded-[40px] border border-yellow-100/60 shadow-sm grid md:grid-cols-2 gap-y-6 gap-x-12 mt-8">
+                <div class="honor-item flex items-center gap-3"><i data-lucide="medal" class="w-5 h-5 text-brand-yellow"></i> <span class="font-bold text-gray-800">中南大学 2022-2023 学年优秀学生</span></div>
+                <div class="honor-item flex items-center gap-3"><i data-lucide="medal" class="w-5 h-5 text-brand-yellow"></i> <span class="font-bold text-gray-800">中南大学 2022-2023 学年二等奖学金</span></div>
+                <div class="honor-item flex items-center gap-3"><i data-lucide="medal" class="w-5 h-5 text-brand-yellow"></i> <span class="font-bold text-gray-800">中南大学 2022-2024 学年优秀学生干部</span></div>
+                <div class="honor-item flex items-center gap-3"><i data-lucide="medal" class="w-5 h-5 text-brand-yellow"></i> <span class="font-bold text-gray-800">中南大学 2023-2024 学年优秀学生会干部</span></div>
+                <div class="honor-item flex items-center gap-3"><i data-lucide="medal" class="w-5 h-5 text-brand-yellow"></i> <span class="font-bold text-gray-800">中南大学 2023-2024 学年三等奖学金</span></div>
+                <div class="honor-item flex items-center gap-3"><i data-lucide="medal" class="w-5 h-5 text-brand-yellow"></i> <span class="font-bold text-gray-800">中南大学 2024-2025 学年优秀共青团干部</span></div>
+                <div class="honor-item flex items-center gap-3"><i data-lucide="medal" class="w-5 h-5 text-brand-yellow"></i> <span class="font-bold text-gray-800">中南大学 2024-2025 体育文化先进个人</span></div>
+            </div>
+         </section>
+
+    </main>
+
+    <section id="projects" class="py-40 relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-7xl font-black text-gray-900 tracking-tighter mb-24">SELECTED WORKS</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div onclick="openModal('modal-anxinyun')" class="group cursor-pointer bg-white/60 backdrop-blur-md rounded-[40px] p-10 shadow-lg hover:shadow-2xl transition-all duration-500 border-t-8 border-brand-pink relative overflow-hidden">
+                    <i data-lucide="apple" class="absolute top-6 right-6 w-12 h-12 text-brand-pink opacity-20 group-hover:opacity-100 transition transform group-hover:scale-110 fill-current"></i>
+                    <h3 class="text-3xl font-bold mt-10 mb-4 group-hover:text-brand-pink">安心孕</h3>
+                    <p class="text-sm text-gray-600">乡村孕妇健康服务数字干预设计</p>
+                </div>
+                <div onclick="openModal('modal-guoyuan')" class="group cursor-pointer bg-white/60 backdrop-blur-md rounded-[40px] p-10 shadow-lg hover:shadow-2xl transition-all duration-500 border-t-8 border-brand-green relative overflow-hidden"><i data-lucide="sprout" class="absolute top-6 right-6 w-12 h-12 text-brand-green opacity-20 group-hover:opacity-100 transition transform group-hover:scale-110 fill-current"></i><h3 class="text-3xl font-bold mt-10 mb-4 group-hover:text-brand-green">果缘</h3><p class="text-sm text-gray-600">互动式自然教育工具包</p></div>
+                <div onclick="openModal('modal-jinshang')" class="group cursor-pointer bg-gray-950/80 backdrop-blur-md rounded-[40px] p-10 shadow-lg hover:shadow-2xl transition-all duration-500 border-t-8 border-brand-peach relative overflow-hidden"><i data-lucide="flower" class="absolute top-6 right-6 w-12 h-12 text-brand-peach opacity-20 group-hover:opacity-100 transition transform group-hover:scale-110 fill-current"></i><h3 class="text-3xl font-bold mt-10 mb-4 text-white group-hover:text-brand-peach">晋上添花</h3><p class="text-sm text-gray-400">非遗数字化创新与游戏设计</p></div>
+                <div onclick="openModal('modal-infinite')" class="group cursor-pointer bg-white/60 backdrop-blur-md rounded-[40px] p-10 shadow-lg hover:shadow-2xl transition-all duration-500 border-t-8 border-brand-orange relative overflow-hidden"><i data-lucide="bird" class="absolute top-6 right-6 w-12 h-12 text-brand-orange opacity-20 group-hover:opacity-100 transition transform group-hover:scale-110 fill-current"></i><h3 class="text-3xl font-bold mt-10 mb-4 group-hover:text-brand-orange">无限天空</h3><p class="text-sm text-gray-600">艺术疗愈解压交互装置</p></div>
+                <div onclick="openModal('modal-chengyou')" class="group cursor-pointer bg-white/60 backdrop-blur-md rounded-[40px] p-10 shadow-lg hover:shadow-2xl transition-all duration-500 border-t-8 border-brand-yellow relative overflow-hidden"><i data-lucide="hand" class="absolute top-6 right-6 w-12 h-12 text-brand-yellow opacity-20 group-hover:opacity-100 transition transform group-hover:scale-110 fill-current"></i><h3 class="text-3xl font-bold mt-10 mb-4 group-hover:text-brand-yellow">橙柚之恋</h3><p class="text-sm text-gray-600">MG 动画广告创意策略</p></div>
+                <div onclick="openModal('modal-fire')" class="group cursor-pointer bg-white/60 backdrop-blur-md rounded-[40px] p-10 shadow-lg hover:shadow-2xl transition-all duration-500 border-t-8 border-brand-red relative overflow-hidden"><i data-lucide="flame" class="absolute top-6 right-6 w-12 h-12 text-brand-red opacity-20 group-hover:opacity-100 transition transform group-hover:scale-110 fill-current"></i><h3 class="text-3xl font-bold mt-10 mb-4 group-hover:text-brand-red">熄星星之火</h3><p class="text-sm text-gray-600">定格动画公益广告</p></div>
+                <div onclick="openModal('modal-more')" class="group cursor-pointer bg-white/40 backdrop-blur-md rounded-[40px] p-10 border-2 border-dashed border-gray-300/60 hover:border-gray-400 transition flex flex-col items-center justify-center text-center"><i data-lucide="plus" class="w-12 h-12 text-gray-400 mb-4 group-hover:text-gray-600 transition"></i><h3 class="text-xl font-bold text-gray-500">MORE PROJECTS</h3></div>
+            </div>
+        </div>
+    </section>
+
+    <div id="modal-anxinyun" class="fixed inset-0 z-[200] hidden bg-white/95 backdrop-blur-xl overflow-y-auto">
+        <div class="max-w-7xl mx-auto p-12 relative">
+            <button onclick="closeModal('modal-anxinyun')" class="modal-close"><i data-lucide="x"></i></button>
+            <h1 class="text-6xl font-black text-brand-pink mb-4">安心孕</h1>
+            <p class="text-2xl text-gray-600 mb-20 max-w-4xl">基于数字干预的乡村孕妇健康管理服务设计。</p>
+            <div class="space-y-16">
+                <img src="assets/项目二一封面.jpg" class="w-full rounded-[60px] shadow-2xl">
+                <img src="assets/项目二 P1.jpg" class="w-full rounded-[60px] shadow-2xl">
+                <img src="assets/项目二 P2.jpg" class="w-full rounded-[60px] shadow-2xl">
+                <img src="assets/项目二 P3.jpg" class="w-full rounded-[60px] shadow-2xl">
+            </div>
+        </div>
+    </div>
+    <div id="modal-guoyuan" class="fixed inset-0 z-[200] hidden bg-white/95 backdrop-blur-xl overflow-y-auto"><div class="max-w-7xl mx-auto p-12 relative"><button onclick="closeModal('modal-guoyuan')" class="modal-close"><i data-lucide="x"></i></button><h1 class="text-6xl font-black text-brand-green mb-4">果缘</h1>    <p class="text-2xl text-gray-600 mb-20 max-w-4xl">基于STEAM理论的互动式自然教育工具包。</p>
+<div class="space-y-16"><video controls playsinline preload="metadata" class="w-full h-auto rounded-[60px] shadow-2xl aspect-video">
+    <source src="assets/果缘.mp4#t=0.1" type="video/mp4">
+    您的浏览器不支持视频播放，请尝试更换 Chrome 浏览器。
+</video><img src="assets/项目一封面.jpg" class="w-full rounded-[60px] shadow-2xl"><img src="assets/项目一 P1.jpg" class="w-full rounded-[60px] shadow-2xl"><img src="assets/项目一 P2.jpg" class="w-full rounded-[60px] shadow-2xl"><img src="assets/项目一 P3.jpg" class="w-full rounded-[60px] shadow-2xl"></div></div></div>
+    <div id="modal-jinshang" class="fixed inset-0 z-[200] hidden bg-[#050505]/95 backdrop-blur-md overflow-y-auto text-white">
+    <div class="max-w-7xl mx-auto p-8 md:p-12 relative">
+        <button onclick="closeModal('modal-jinshang')" class="modal-close text-gray-900"><i data-lucide="x"></i></button>
+        <h1 class="text-4xl md:text-6xl font-black text-brand-peach mb-20">晋上添花—非遗闻喜花馍信息设计/游戏设计</h1>
+        
+        <div class="space-y-40">
+            <section>
+                <h2 class="text-3xl font-bold text-white mb-10 border-l-8 border-brand-peach pl-8">Part 1: 信息设计模块</h2>
+                <div class="space-y-12 mb-20">
+                    <img src="assets/项目三一封面.jpg" class="w-full rounded-[40px] md:rounded-[60px] shadow-2xl">
+                    <img src="assets/项目三p1.jpg" class="w-full rounded-[40px] md:rounded-[60px] shadow-2xl">
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="aspect-[1/1.41] bg-gray-900 rounded-3xl overflow-hidden border border-gray-800">
+                        <video autoplay loop muted playsinline preload="none" class="w-full h-full object-contain">
+                            <source src="assets/花馍1.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="aspect-[1/1.41] bg-gray-900 rounded-3xl overflow-hidden border border-gray-800">
+                        <video autoplay loop muted playsinline preload="none" class="w-full h-full object-contain">
+                            <source src="assets/花馍2.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-bold text-white mb-10 border-l-8 border-brand-peach pl-8">Part 2: 游戏设计模块</h2>
+                <div class="space-y-12 mb-20">
+                    <img src="assets/项目三 P3.jpg" class="w-full rounded-[40px] md:rounded-[60px] shadow-2xl">
+                    <img src="assets/项目三 P4.jpg" class="w-full rounded-[40px] md:rounded-[60px] shadow-2xl">
+                    <img src="assets/项目三 P4-1.jpg" class="w-full rounded-[40px] md:rounded-[60px] shadow-2xl">
+                </div>
+                <div class="aspect-[1980/1020] w-full bg-black rounded-[40px] md:rounded-[60px] border border-gray-900 flex items-center justify-center overflow-hidden shadow-2xl">
+                    <video controls playsinline preload="none" class="w-full h-full object-cover">
+                        <source src="assets/花馍优秀演示.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div id="modal-infinite" class="fixed inset-0 z-[200] hidden bg-white/95 backdrop-blur-md overflow-y-auto">
+    <div class="max-w-7xl mx-auto p-8 md:p-12 relative">
+        <button onclick="closeModal('modal-infinite')" class="modal-close"><i data-lucide="x"></i></button>
+        <h1 class="text-4xl md:text-6xl font-black text-brand-orange mb-8">无限天空</h1>
+ <p class="text-2xl text-gray-600 mb-20 max-w-4xl">基于TouchDesinger的解压交互装置设计。</p>
+        <div class="space-y-12">
+            <img src="assets/项目四.jpg" loading="lazy" class="w-full rounded-[40px] shadow-2xl">
+     <video controls preload="none" playsinline class="w-full h-auto rounded-[40px] shadow-2xl aspect-video bg-black">
+                <source src="assets/无限.mp4" type="video/mp4">
+            </video>
+
+        </div>
+    </div>
+</div>
+
+<div id="modal-chengyou" class="fixed inset-0 z-[200] hidden bg-white/90 backdrop-blur-md overflow-y-auto">
+    <div class="max-w-7xl mx-auto p-8 md:p-12 relative">
+        <button onclick="closeModal('modal-chengyou')" class="modal-close"><i data-lucide="x"></i></button>
+        <h1 class="text-4xl md:text-6xl font-black text-brand-yellow mb-8">橙柚之恋</h1>
+ <p class="text-2xl text-gray-600 mb-20 max-w-4xl">纳爱斯抗口气牙膏动画广告。</p>
+        <div class="space-y-12">
+                     <img src="assets/A4 - 15.jpg" loading="lazy" class="w-full rounded-[40px] shadow-lg">
+   <video controls preload="none" playsinline class="w-full h-auto rounded-[40px] shadow-lg aspect-video bg-black">
+                <source src="assets/橙柚之恋.mp4#t=0.1" type="video/mp4">
+            </video>
+
+        </div>
+    </div>
+</div>
+
+<div id="modal-fire" class="fixed inset-0 z-[200] hidden bg-white/90 backdrop-blur-md overflow-y-auto">
+    <div class="max-w-7xl mx-auto p-8 md:p-12 relative">
+        <button onclick="closeModal('modal-fire')" class="modal-close"><i data-lucide="x"></i></button>
+        <h1 class="text-4xl md:text-6xl font-black text-brand-red mb-8">熄星星之火</h1>
+ <p class="text-2xl text-gray-600 mb-20 max-w-4xl">定格动画公益广告。</p>
+        <div class="space-y-12">
+            <img src="assets/A4 - 21.jpg" loading="lazy" class="w-full rounded-[40px] shadow-lg">
+<video controls preload="none" playsinline class="w-full h-auto rounded-[40px] shadow-lg aspect-video bg-black">
+                <source src="assets/fire_video.mp4" type="video/mp4">
+            </video>
+
+        </div>
+    </div>
+</div>
+    <div id="modal-more" class="fixed inset-0 z-[200] hidden bg-gray-50/95 backdrop-blur-xl overflow-y-auto"><div class="max-w-7xl mx-auto p-24"><button onclick="closeModal('modal-more')" class="modal-close"><i data-lucide="x"></i></button><h1 class="text-4xl font-black text-gray-300 text-center mb-20">MORE PROJECTS</h1><div class="grid md:grid-cols-2 gap-12"><div class="aspect-video bg-white/50 rounded-[40px] border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400"><i data-lucide="video" class="w-12 h-12 mb-4"></i>Video Slot 01</div><div class="aspect-video bg-white/50 rounded-[40px] border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400"><i data-lucide="video" class="w-12 h-12 mb-4"></i>Video Slot 02</div><div class="aspect-video bg-white/50 rounded-[40px] border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400">Image Slot 03</div><div class="aspect-video bg-white/50 rounded-[40px] border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400">Image Slot 04</div></div></div></div>
+
+    <script>
+        lucide.createIcons();
+        gsap.registerPlugin(ScrollTrigger);
+
+        // 增强版背景视差效果
+        window.addEventListener('scroll', () => {
+            const scY = window.scrollY;
+            // 不同元素设置不同的移动速度，制造深度感
+            gsap.to('.blob-1', { y: scY * 0.1, duration: 0.5, ease: 'power1.out' }); 
+            gsap.to('.blob-2', { y: -scY * 0.15, duration: 0.5, ease: 'power1.out' });
+            gsap.to('.blob-3', { y: scY * 0.08, duration: 0.5, ease: 'power1.out' });
+            gsap.to('.blob-4', { y: -scY * 0.12, duration: 0.5, ease: 'power1.out' });
+            gsap.to('.circle-1', { y: scY * 0.05, duration: 0.5, ease: 'power1.out' });
+            gsap.to('.circle-2', { y: -scY * 0.07, duration: 0.5, ease: 'power1.out' });
+        });
+
+        // 首页图标动画
+        gsap.from('.icon-lively', { 
+            y: 150, 
+            opacity: 0, 
+            scale: 0.5, 
+            duration: 1.5, 
+            stagger: 0.2, 
+            ease: "elastic.out(1, 0.5)", 
+            delay: 0.5 
+        });
+
+        // 修复后的雷达图逻辑
+        function initRadarChart() {
+            const dimensions = ["技术实现", "AIGC应用", "视觉设计", "交互逻辑", "项目领导", "学术研究"];
+            const scores = [4.5, 4.0, 4.5, 4.5, 4.5, 4.0]; // 5分制
+            
+            // 计算雷达图点的坐标
+            const centerX = 150;
+            const centerY = 150;
+            const radius = 75; // 稍微减小半径以防止标签溢出
+            
+            const radarAxes = document.getElementById('radar-axes');
+            const radarPoints = document.getElementById('radar-points');
+            const radarLabels = document.getElementById('radar-labels');
+            const radarPolygon = document.getElementById('radar-polygon');
+
+            // 清空现有内容
+            radarAxes.innerHTML = '';
+            radarPoints.innerHTML = '';
+            radarLabels.innerHTML = '';
+            
+            // 生成数据点和轴线
+            const pointsData = dimensions.map((dimension, i) => {
+                const angle = (Math.PI / 2) + (i * (2 * Math.PI / dimensions.length)); // 从底部开始逆时针
+                // 注意：SVG坐标系中，0度是3点钟方向，顺时针增加。这里我们需要调整角度。
+                // 重新调整：让第一个点(i=0)在正上方 (-90度 = -PI/2)
+                const angleRad = (i * (2 * Math.PI / dimensions.length)) - (Math.PI / 2);
+                
+                const score = scores[i];
+                const pointRadius = (score / 5) * radius;
+                
+                const x = centerX + pointRadius * Math.cos(angleRad);
+                const y = centerY + pointRadius * Math.sin(angleRad);
+
+                // 轴线终点 (圆周上)
+                const axisX = centerX + radius * Math.cos(angleRad);
+                const axisY = centerY + radius * Math.sin(angleRad);
+
+                // 标签位置 (圆周外一点)
+                const labelRadius = radius + 25; // 向外推25px
+                let labelX = centerX + labelRadius * Math.cos(angleRad);
+                const labelY = centerY + labelRadius * Math.sin(angleRad);
+                
+                return { x, y, axisX, axisY, labelX, labelY, score, label: dimension, angleRad };
+            });
+            
+            // 绘制轴线
+            pointsData.forEach(p => {
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", centerX);
+                line.setAttribute("y1", centerY);
+                line.setAttribute("x2", p.axisX);
+                line.setAttribute("y2", p.axisY);
+                line.classList.add("radar-axis"); // 使用CSS类控制样式
+                line.style.stroke = "#E2E8F0";
+                line.style.strokeWidth = "1";
+                radarAxes.appendChild(line);
+            });
+
+            // 生成多边形路径字符串
+            const pointsString = pointsData.map(p => `${p.x},${p.y}`).join(' ');
+            radarPolygon.setAttribute('points', pointsString);
+            
+            // 绘制点和标签
+            pointsData.forEach((p, i) => {
+                // 1. 绘制点
+                const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circle.classList.add('radar-point');
+                circle.setAttribute('cx', p.x);
+                circle.setAttribute('cy', p.y);
+                circle.setAttribute('r', '0'); // 初始半径0，由GSAP动画放大
+                circle.setAttribute('stroke', getColorForIndex(i));
+                
+                // 交互事件
+                circle.addEventListener('mouseenter', () => highlightRadarDimension(i));
+                circle.addEventListener('mouseleave', () => resetRadarHighlight());
+                
+                radarPoints.appendChild(circle);
+
+                // 2. 绘制标签
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute('x', p.labelX);
+                text.setAttribute('y', p.labelY);
+                text.classList.add('radar-label');
+                text.textContent = p.label;
+                text.setAttribute('fill', getColorForIndex(i)); // 标签颜色匹配
+
+                // 智能对齐逻辑：防止遮挡
+                // 根据角度决定文本对齐方式
+                const angleDeg = (p.angleRad * 180 / Math.PI);
+                
+                if (Math.abs(angleDeg + 90) < 1) { // -90度 (正上方)
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('dominant-baseline', 'auto');
+                } else if (Math.abs(angleDeg - 90) < 1) { // 90度 (正下方)
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('dominant-baseline', 'hanging');
+                } else if (angleDeg > -90 && angleDeg < 90) { // 右侧
+                    text.setAttribute('text-anchor', 'start');
+                    text.setAttribute('dominant-baseline', 'middle');
+                    text.setAttribute('x', p.labelX - 5); // 稍微往回拉一点点
+                } else { // 左侧
+                    text.setAttribute('text-anchor', 'end');
+                    text.setAttribute('dominant-baseline', 'middle');
+                    text.setAttribute('x', p.labelX + 5); // 稍微往回拉一点点
+                }
+
+                radarLabels.appendChild(text);
+            });
+            
+            // GSAP 动画
+            
+            // 多边形展开
+            gsap.to(radarPolygon, {
+                opacity: 1,
+                duration: 1.5,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: '.radar-chart',
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                }
+            });
+            
+            // 点弹出
+            gsap.to('.radar-point', {
+                r: 5,
+                opacity: 1,
+                duration: 1,
+                delay: 0.5,
+                stagger: 0.1,
+                ease: "elastic.out(1, 0.5)",
+                scrollTrigger: {
+                    trigger: '.radar-chart',
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                }
+            });
+            
+            // 标签浮现
+            gsap.to('.radar-label', {
+                opacity: 1,
+                duration: 0.8,
+                stagger: 0.1,
+                scrollTrigger: {
+                    trigger: '.radar-chart',
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
+                }
+            });
+        }
+        
+        // 工具函数
+        function getColorForIndex(index) {
+            const colors = ['#FF8595', '#4ADE80', '#FACC15', '#F97316', '#FF4081', '#EF4444'];
+            return colors[index % colors.length];
+        }
+        
+        function highlightRadarDimension(index) {
+            const labels = document.querySelectorAll('.radar-label');
+            const points = document.querySelectorAll('.radar-point');
+            
+            // 重置
+            labels.forEach(l => { l.style.fontWeight = '600'; l.style.fontSize = '11px'; });
+            points.forEach(p => { p.style.transform = 'scale(1)'; });
+            
+            // 高亮
+            if(labels[index]) {
+                labels[index].style.fontWeight = '900';
+                labels[index].style.fontSize = '12px';
+            }
+            if(points[index]) {
+                points[index].style.transform = 'scale(1.5)';
+            }
+        }
+        
+        function resetRadarHighlight() {
+            const labels = document.querySelectorAll('.radar-label');
+            const points = document.querySelectorAll('.radar-point');
+            
+            labels.forEach(l => { l.style.fontWeight = '600'; l.style.fontSize = '11px'; });
+            points.forEach(p => { p.style.transform = 'scale(1)'; });
+        }
+
+        // 初始化雷达图
+        initRadarChart();
+
+        // 气泡图浮动动画
+        gsap.to('.bubble', { 
+            y: "random(-15, 15)", 
+            duration: "random(2, 4)", 
+            repeat: -1, 
+            yoyo: true, 
+            ease: "sine.inOut", 
+            stagger: 0.5 
+        });
+
+        // 成长历程动画
+        gsap.utils.toArray('.growth-step').forEach((step, i) => { 
+            gsap.from(step, { 
+                opacity: 0, 
+                y: 50, 
+                duration: 0.8, 
+                delay: i * 0.2, 
+                scrollTrigger: { 
+                    trigger: step, 
+                    start: "top 85%" 
+                } 
+            }); 
+        });
+
+        // 荣誉统计数字动画
+        document.querySelectorAll('.honor-stat-card').forEach(card => {
+            const countElement = card.querySelector('.honor-stat-number');
+            const targetCount = parseInt(card.getAttribute('data-count'));
+            
+            gsap.to(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 85%",
+                    onEnter: () => {
+                        let count = 0;
+                        const increment = targetCount / 30;
+                        const timer = setInterval(() => {
+                            count += increment;
+                            if (count >= targetCount) {
+                                count = targetCount;
+                                clearInterval(timer);
+                            }
+                            countElement.textContent = Math.floor(count);
+                        }, 50);
+                    }
+                }
+            });
+        });
+
+        // 整个简历部分入场动画
+        gsap.utils.toArray('.resume-section').forEach(section => {
+            gsap.from(section, { 
+                opacity: 0, 
+                y: 60, 
+                duration: 1.5, 
+                scrollTrigger: { 
+                    trigger: section, 
+                    start: "top 85%", 
+                    toggleActions: "play none none reverse" 
+                } 
+            });
+        });
+
+        // 音乐控制
+        function toggleMusic() {
+            const audio = document.getElementById('bgm');
+            const disc = document.getElementById('music-disc');
+            if (audio.paused) { 
+                audio.play(); 
+                disc.classList.add('music-spin'); 
+            } else { 
+                audio.pause(); 
+                disc.classList.remove('music-spin'); 
+            }
+        }
+
+        // 点击页面开始音乐
+        document.body.addEventListener('click', () => { 
+            const audio = document.getElementById('bgm'); 
+            if(audio.paused) { 
+                audio.play(); 
+                document.getElementById('music-disc').classList.add('music-spin'); 
+            } 
+        }, { once: true });
+
+        // 模态框控制
+        function openModal(id) { 
+            document.getElementById(id).classList.remove('hidden'); 
+            document.body.style.overflow = 'hidden'; 
+        }
+        
+        function closeModal(id) { 
+            document.getElementById(id).classList.add('hidden'); 
+            document.body.style.overflow = 'auto'; 
+        }
+        
+        // 计数器动画
+        function animateCounter(element, start, end) {
+            const numberElement = element.querySelector('.stat-number');
+            if (numberElement.dataset.animating === "true") return;
+            numberElement.dataset.animating = "true";
+            
+            let obj = { val: start };
+            gsap.to(obj, { 
+                val: end, 
+                duration: 1, 
+                ease: "power2.out", 
+                onUpdate: () => { 
+                    numberElement.innerText = end % 1 === 0 ? Math.round(obj.val) : obj.val.toFixed(2); 
+                }, 
+                onComplete: () => { 
+                    numberElement.dataset.animating = "false"; 
+                } 
+            });
+        }
+    </script>
+</body>
+</html>
